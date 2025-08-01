@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import shopLogo from '../assets/favicon_io/android-chrome-512x512.png';
 
-function Header() {
+function Header({ closeMobileMenuRef }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -20,6 +20,19 @@ function Header() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
+
+  // Close mobile menu function that can be called from parent
+  const closeMobileMenu = () => {
+    setIsMenuOpen(false);
+    setIsSearchOpen(false);
+  };
+
+  // Expose the close function to parent component via ref
+  useEffect(() => {
+    if (closeMobileMenuRef) {
+      closeMobileMenuRef.current = closeMobileMenu;
+    }
+  }, [closeMobileMenuRef]);
 
   return (
     <header

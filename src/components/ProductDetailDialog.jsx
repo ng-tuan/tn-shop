@@ -10,13 +10,15 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
         className='bg-white rounded-2xl shadow-xl w-full max-w-md md:max-w-2xl max-h-[90vh] overflow-y-auto relative'
         onClick={e => e.stopPropagation()}
       >
-        {/* Close button */}
+        {/* Close button - Improved for mobile */}
         <button
           onClick={onClose}
-          className='absolute top-4 right-4 md:top-4 md:right-4 text-gray-600 hover:text-gray-800 text-2xl md:text-2xl font-bold z-10 w-10 h-10 md:w-8 md:h-8 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-200'
-          aria-label='Close'
+          className='absolute top-3 right-3 md:top-4 md:right-4 text-gray-500 hover:text-gray-700 text-3xl md:text-2xl font-light z-10 w-12 h-12 md:w-10 md:h-10 flex items-center justify-center bg-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200 hover:border-gray-300'
+          aria-label='Close dialog'
         >
-          &times;
+          <svg className='w-6 h-6 md:w-5 md:h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
+          </svg>
         </button>
 
         {/* Mobile Layout */}

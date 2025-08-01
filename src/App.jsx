@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import products from './products.json';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -9,10 +9,17 @@ import StarRating from './components/StarRating';
 function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const closeMobileMenuRef = useRef(null);
 
   const handleProductClick = product => {
     setSelectedProduct(product);
     setIsDialogOpen(true);
+    // Close mobile menu when dialog opens
+    if (window.innerWidth < 768) { // Only on mobile devices
+      if (closeMobileMenuRef.current) {
+        closeMobileMenuRef.current();
+      }
+    }
   };
 
   const handleCloseDialog = () => {
@@ -23,7 +30,7 @@ function App() {
   return (
     <div className='min-h-screen bg-white'>
       {/* Header */}
-      <Header />
+      <Header closeMobileMenuRef={closeMobileMenuRef} />
 
       {/* Main Content */}
       <main className='max-w-7xl mx-auto px-6 py-8 pt-20'>
