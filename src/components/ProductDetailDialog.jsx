@@ -1,8 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import StarRating from './StarRating';
 
 const ProductDetailDialog = ({ open, onClose, product }) => {
   if (!open || !product) return null;
+
+  // Handle back button behavior on mobile devices
+  useEffect(() => {
+    if (!open) return;
+
+    const handleBackButton = (event) => {
+      // Prevent default back behavior
+      event.preventDefault();
+      onClose();
+    };
+
+    // Add event listener for popstate (back button)
+    window.addEventListener('popstate', handleBackButton);
+    
+    // Push a new state to enable back button functionality
+    window.history.pushState({ dialog: 'open' }, '');
+
+    return () => {
+      window.removeEventListener('popstate', handleBackButton);
+      // Clean up the history state when dialog closes
+      if (window.history.state?.dialog === 'open') {
+        window.history.back();
+      }
+    };
+  }, [open, onClose]);
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4' onClick={onClose}>
