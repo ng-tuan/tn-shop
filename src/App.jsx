@@ -10,12 +10,14 @@ function App() {
 
   return (
     <SearchProvider>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white flex flex-col">
         {/* Header */}
         <Header closeMobileMenuRef={closeMobileMenuRef} />
 
         {/* Main Content */}
-        <Main closeMobileMenuRef={closeMobileMenuRef} />
+        <div className="flex-1">
+          <Main closeMobileMenuRef={closeMobileMenuRef} />
+        </div>
 
         {/* Footer */}
         <Footer />

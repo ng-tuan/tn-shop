@@ -68,30 +68,30 @@ function Main({ closeMobileMenuRef }) {
     <>
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8 pt-20">
-        {/* Search Results Info */}
-        {isSearching && (
-          <div className="mb-6">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-600">
-                {hasSearchResults ? (
-                  <p>
-                    Tìm thấy {totalResults} sản phẩm cho "{searchTerm}"
-                  </p>
-                ) : (
-                  <p>Không tìm thấy sản phẩm nào cho "{searchTerm}"</p>
-                )}
+          {/* Search Results Info */}
+          {isSearching && searchTerm.trim() && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600">
+                  {hasSearchResults ? (
+                    <p>
+                      Tìm thấy {totalResults} sản phẩm cho "{searchTerm}"
+                    </p>
+                  ) : (
+                    <p>Không tìm thấy sản phẩm nào cho "{searchTerm}"</p>
+                  )}
+                </div>
+                <button
+                  onClick={() => {
+                    clearSearchTerm();
+                  }}
+                  className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                >
+                  Xóa tìm kiếm
+                </button>
               </div>
-              <button
-                onClick={() => {
-                  clearSearchTerm();
-                }}
-                className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-              >
-                Xóa tìm kiếm
-              </button>
             </div>
-          </div>
-        )}
+          )}
 
         {/* Category Filter Display */}
         {searchSelectedCategory !== "550e8400-e29b-41d4-a716-446655440000" &&

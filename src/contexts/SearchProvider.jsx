@@ -97,9 +97,7 @@ export const SearchProvider = ({ children }) => {
     // Computed values
     hasSearchResults: filteredProducts.length > 0,
     totalResults: filteredProducts.length,
-    isSearching:
-      searchTerm.trim().length > 0 ||
-      selectedCategory !== "550e8400-e29b-41d4-a716-446655440000",
+    isSearching: searchTerm.trim().length > 0,
   };
 
   return (
