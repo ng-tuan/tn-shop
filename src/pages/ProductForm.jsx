@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import categoriesData from "../data/categories.json";
 
 const ProductForm = () => {
   const navigate = useNavigate();
@@ -17,12 +18,7 @@ const ProductForm = () => {
   const [success, setSuccess] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
 
-  const categories = [
-    { id: "550e8400-e29b-41d4-a716-446655440001", name: "Thời trang" },
-    { id: "550e8400-e29b-41d4-a716-446655440002", name: "Đồ công nghệ" },
-    { id: "550e8400-e29b-41d4-a716-446655440003", name: "Thú cưng" },
-    { id: "550e8400-e29b-41d4-a716-446655440004", name: "Handmade" },
-  ];
+  const categories = categoriesData;
 
   const validateField = (name, value) => {
     let error = "";
@@ -200,6 +196,7 @@ const ProductForm = () => {
       if (!updateResponse.ok) {
         throw new Error("Lỗi khi thêm sản phẩm");
       }
+
       // Reset form
       clearForm();
 
