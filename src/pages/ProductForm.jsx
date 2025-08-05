@@ -158,12 +158,21 @@ const ProductForm = () => {
 
       const existingData = await getResponse.json();
       const firstKey = Object.keys(existingData)[0];
-      const existingProducts = existingData[firstKey] || [];
+      const existingProducts = existingData[firstKey] || {};
+
+      // Extract all products from the nested structure
+      const productsArray = [];
+      Object.keys(existingProducts).forEach(key => {
+        const product = existingProducts[key];
+        if (product && typeof product === 'object') {
+          productsArray.push(product);
+        }
+      });
 
       // Generate next ID
       const nextId =
-        existingProducts.length > 0
-          ? Math.max(...existingProducts.map((p) => p.id)) + 1
+        productsArray.length > 0
+          ? Math.max(...productsArray.map((p) => p.id)) + 1
           : 1;
 
       // Prepare new product data
@@ -178,10 +187,14 @@ const ProductForm = () => {
         category: formData.category,
       };
 
-      // Add new product to existing array
-      const updatedProducts = [...existingProducts, newProduct];
+      // Add new product to existing structure
+      const nextKey = Object.keys(existingProducts).length.toString();
+      const updatedProducts = {
+        ...existingProducts,
+        [nextKey]: newProduct
+      };
 
-      // Update the products array in Firebase
+      // Update the products in Firebase
       const updateResponse = await fetch(
         `https://tn-shop-873ac-default-rtdb.asia-southeast1.firebasedatabase.app/products/${firstKey}.json`,
         {

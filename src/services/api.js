@@ -1,7 +1,6 @@
 import categoriesData from '../data/categories.json';
 
-const API_BASE_URL =
-  "https://tn-shop-873ac-default-rtdb.asia-southeast1.firebasedatabase.app";
+const API_BASE_URL = 'https://tn-shop-873ac-default-rtdb.asia-southeast1.firebasedatabase.app';
 
 export const fetchProducts = async () => {
   try {
@@ -10,13 +9,28 @@ export const fetchProducts = async () => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-
-    // The Firebase API returns data in a nested structure with keys
-    // We need to extract the products array from the first key
-    const firstKey = Object.keys(data)[0];
-    return data[firstKey] || [];
+    
+    // Handle the new nested object structure
+    // Convert nested object to array of products
+    const products = [];
+    
+    Object.keys(data).forEach(firstKey => {
+      const firstLevel = data[firstKey];
+      
+      // Check if firstLevel is an object with numeric keys (array-like)
+      if (typeof firstLevel === 'object' && firstLevel !== null) {
+        Object.keys(firstLevel).forEach(secondKey => {
+          const product = firstLevel[secondKey];
+          if (product && typeof product === 'object') {
+            products.push(product);
+          }
+        });
+      }
+    });
+    
+    return products;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error('Error fetching products:', error);
     throw error;
   }
 };
