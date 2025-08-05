@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import categoriesData from "../data/categories.json";
 
 const ProductForm = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -11,7 +9,7 @@ const ProductForm = () => {
     image: "",
     rating: "",
     link: "",
-    category: "550e8400-e29b-41d4-a716-446655440001",
+    category: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -75,7 +73,7 @@ const ProductForm = () => {
     try {
       new URL(string);
       return true;
-    } catch (_) {
+    } catch {
       return false;
     }
   };
@@ -113,7 +111,7 @@ const ProductForm = () => {
       image: "",
       rating: "",
       link: "",
-      category: categories[0]?.id || "550e8400-e29b-41d4-a716-446655440001",
+      category: "",
     });
     setFieldErrors({});
     setError("");
