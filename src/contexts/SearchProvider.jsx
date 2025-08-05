@@ -1,6 +1,5 @@
-import React, { useState, useMemo } from "react";
-import productsData from "../data/products.json";
-import categoriesData from "../data/categories.json";
+import React, { useState, useMemo, useEffect, useRef } from "react";
+import { fetchProducts, fetchCategories } from "../services/api";
 import { SearchContext } from "./SearchContext";
 
 export const SearchProvider = ({ children }) => {
@@ -8,6 +7,36 @@ export const SearchProvider = ({ children }) => {
   const [selectedCategory, setSelectedCategory] = useState(
     "550e8400-e29b-41d4-a716-446655440000",
   ); // "Tất cả sản phẩm"
+  const [productsData, setProductsData] = useState([]);
+  const [categoriesData, setCategoriesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const hasLoadedRef = useRef(false);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    if (hasLoadedRef.current) return;
+
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const [products, categories] = await Promise.all([
+          fetchProducts(),
+          fetchCategories(),
+        ]);
+        setProductsData(products);
+        setCategoriesData(categories);
+        setError(null);
+        hasLoadedRef.current = true;
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   // Create a map of category IDs to category names for easy lookup
   const categoryMap = useMemo(() => {
@@ -16,7 +45,7 @@ export const SearchProvider = ({ children }) => {
       map.set(category.id, category.name);
     });
     return map;
-  }, []);
+  }, [categoriesData]);
 
   // Filter and search products
   const filteredProducts = useMemo(() => {
@@ -56,10 +85,10 @@ export const SearchProvider = ({ children }) => {
     }
 
     return filtered;
-  }, [searchTerm, selectedCategory, categoryMap]);
+  }, [searchTerm, selectedCategory, categoryMap, productsData]);
 
   // Get all categories for dropdown/selection
-  const categories = useMemo(() => categoriesData, []);
+  const categories = useMemo(() => categoriesData, [categoriesData]);
 
   // Get current category name
   const currentCategoryName = useMemo(() => {
@@ -97,10 +126,16 @@ export const SearchProvider = ({ children }) => {
     // Computed values
     hasSearchResults: filteredProducts.length > 0,
     totalResults: filteredProducts.length,
-    isSearching: searchTerm.trim().length > 0,
+    isSearching:
+      searchTerm.trim().length > 0 ||
+      selectedCategory !== "550e8400-e29b-41d4-a716-446655440000",
+
+    // Loading and error states
+    loading,
+    error,
   };
 
   return (
     <SearchContext.Provider value={value}>{children}</SearchContext.Provider>
   );
-}; 
+};

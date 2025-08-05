@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import products from "../data/products.json";
 import categories from "../data/categories.json";
 import ProductDetailDialog from "./ProductDetailDialog";
 import StarRating from "./StarRating";
 import { useSearchContext } from "../hooks/useSearchContext";
+import { formatPrice } from "../utils/formatters";
 
 function Main({ closeMobileMenuRef }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -19,6 +19,9 @@ function Main({ closeMobileMenuRef }) {
     selectedCategory: searchSelectedCategory,
     setSelectedCategory: setSearchCategory,
     clearSearchTerm,
+    allProducts,
+    loading,
+    error,
   } = useSearchContext();
 
   // Create category mapping from categories data
@@ -42,8 +45,8 @@ function Main({ closeMobileMenuRef }) {
   const displayProducts = isSearching
     ? filteredProducts
     : searchSelectedCategory === "550e8400-e29b-41d4-a716-446655440000"
-      ? products
-      : products.filter(
+      ? allProducts
+      : allProducts.filter(
           (product) => product.category === searchSelectedCategory,
         );
 
@@ -64,34 +67,67 @@ function Main({ closeMobileMenuRef }) {
     setSelectedProduct(null);
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <main className="max-w-7xl mx-auto px-6 py-8 pt-20">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#276c86] mx-auto mb-4"></div>
+            <p className="text-gray-600">Đang tải sản phẩm...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <main className="max-w-7xl mx-auto px-6 py-8 pt-20">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">Lỗi khi tải dữ liệu: {error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-[#276c86] text-white rounded hover:bg-[#1e5a6f]"
+            >
+              Thử lại
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <>
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8 pt-20">
-          {/* Search Results Info */}
-          {isSearching && searchTerm.trim() && (
-            <div className="mb-6">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600">
-                  {hasSearchResults ? (
-                    <p>
-                      Tìm thấy {totalResults} sản phẩm cho "{searchTerm}"
-                    </p>
-                  ) : (
-                    <p>Không tìm thấy sản phẩm nào cho "{searchTerm}"</p>
-                  )}
-                </div>
-                <button
-                  onClick={() => {
-                    clearSearchTerm();
-                  }}
-                  className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-                >
-                  Xóa tìm kiếm
-                </button>
+        {/* Search Results Info */}
+        {isSearching && searchTerm.trim() && (
+          <div className="mb-6">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600">
+                {hasSearchResults ? (
+                  <p>
+                    Tìm thấy {totalResults} sản phẩm cho "{searchTerm}"
+                  </p>
+                ) : (
+                  <p>Không tìm thấy sản phẩm nào cho "{searchTerm}"</p>
+                )}
               </div>
+              <button
+                onClick={() => {
+                  clearSearchTerm();
+                }}
+                className="text-[#276c86] hover:text-[#1e5a6f] font-medium text-sm"
+              >
+                Xóa tìm kiếm
+              </button>
             </div>
-          )}
+          </div>
+        )}
 
         {/* Category Filter Display */}
         {searchSelectedCategory !== "550e8400-e29b-41d4-a716-446655440000" &&
@@ -105,7 +141,7 @@ function Main({ closeMobileMenuRef }) {
                   onClick={() =>
                     setSearchCategory("550e8400-e29b-41d4-a716-446655440000")
                   }
-                  className="text-blue-600 hover:text-blue-700 font-medium"
+                  className="text-[#276c86] hover:text-[#1e5a6f] font-medium"
                 >
                   Xem tất cả sản phẩm
                 </button>
@@ -132,8 +168,8 @@ function Main({ closeMobileMenuRef }) {
                 <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1 line-clamp-1">
                   {product.name}
                 </h3>
-                <p className="text-base md:text-lg text-blue-700 font-semibold mb-2">
-                  {product.price}
+                <p className="text-base md:text-lg text-[#276c86] font-semibold mb-2">
+                  {formatPrice(product.price)}
                 </p>
 
                 {/* Rating */}
@@ -151,7 +187,7 @@ function Main({ closeMobileMenuRef }) {
 
                 {/* Buy Button */}
                 <button
-                  className="w-full bg-blue-600 text-white px-4 py-2 md:py-3 rounded text-sm md:text-base font-medium hover:bg-blue-700 transition-colors"
+                  className="w-full bg-[#276c86] text-white px-4 py-2 md:py-3 rounded text-sm md:text-base font-medium hover:bg-[#1e5a6f] transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
                     window.open(product.link, "_blank");
@@ -165,7 +201,7 @@ function Main({ closeMobileMenuRef }) {
         </div>
 
         {/* No Products Message */}
-        {displayProducts.length === 0 && (
+        {displayProducts.length === 0 && !loading && (
           <div className="text-center py-12">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               Không tìm thấy sản phẩm
@@ -183,7 +219,7 @@ function Main({ closeMobileMenuRef }) {
                   setSearchCategory("550e8400-e29b-41d4-a716-446655440000");
                 }
               }}
-              className="bg-blue-600 text-white px-6 py-2 rounded font-medium hover:bg-blue-700 transition-colors"
+              className="bg-[#276c86] text-white px-6 py-2 rounded font-medium hover:bg-[#1e5a6f] transition-colors"
             >
               {isSearching ? "Xem tất cả sản phẩm" : "Xem tất cả sản phẩm"}
             </button>

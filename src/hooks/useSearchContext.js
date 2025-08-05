@@ -7,4 +7,4 @@ export const useSearchContext = () => {
     throw new Error("useSearchContext must be used within a SearchProvider");
   }
   return context;
-}; 
+};

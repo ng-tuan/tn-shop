@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import StarRating from "./StarRating";
+import { formatPrice } from "../utils/formatters";
 
 const ProductDetailDialog = ({ open, onClose, product }) => {
   // Handle back button behavior on mobile devices and ESC key
@@ -81,7 +82,9 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
           {/* Product info */}
           <div className="space-y-3">
             <h2 className="text-2xl font-bold">{product.name}</h2>
-            <div className="text-2xl font-semibold">${product.price}</div>
+            <div className="text-2xl font-semibold">
+              {formatPrice(product.price)}
+            </div>
             <div className="flex items-center">
               <span className="mr-2 text-gray-700 font-medium text-base">
                 {product.rating}
@@ -94,7 +97,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
 
             {/* Buy Button */}
             <button
-              className="w-full bg-blue-600 text-white px-4 py-3 rounded text-base font-medium hover:bg-blue-700 transition-colors"
+              className="w-full bg-[#276c86] text-white px-4 py-3 rounded text-base font-medium hover:bg-[#1e5a6f] transition-colors"
               onClick={() => window.open(product.link, "_blank")}
             >
               MUA NGAY
@@ -116,7 +119,9 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
           {/* Product info */}
           <div className="flex-1 min-w-0">
             <h2 className="text-3xl font-bold mb-3">{product.name}</h2>
-            <div className="text-3xl font-semibold mb-3">${product.price}</div>
+            <div className="text-3xl font-semibold mb-3">
+              {formatPrice(product.price)}
+            </div>
             <div className="flex items-center mb-3">
               <span className="mr-3 text-gray-700 font-medium text-lg">
                 {product.rating}
@@ -127,7 +132,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
               {product.description}
             </div>
             <button
-              className="w-full bg-blue-600 text-white px-4 py-3 rounded text-base font-medium hover:bg-blue-700 transition-colors"
+              className="w-full bg-[#276c86] text-white px-4 py-3 rounded text-base font-medium hover:bg-[#1e5a6f] transition-colors"
               onClick={() => window.open(product.link, "_blank")}
             >
               MUA NGAY
