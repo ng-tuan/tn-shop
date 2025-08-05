@@ -18,7 +18,7 @@ const ProductForm = () => {
   const [success, setSuccess] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
 
-  const categories = categoriesData;
+  const categories = categoriesData.filter(category => category.id !== "550e8400-e29b-41d4-a716-446655440000");
 
   const validateField = (name, value) => {
     let error = "";
@@ -44,11 +44,7 @@ const ProductForm = () => {
         }
         break;
       case "image":
-        if (!value.trim()) {
-          error = "URL hình ảnh không được để trống";
-        } else if (!isValidUrl(value)) {
-          error = "URL hình ảnh không hợp lệ";
-        }
+        // No validation for image URL - optional field
         break;
       case "rating":
         if (!value) {
@@ -117,7 +113,7 @@ const ProductForm = () => {
       image: "",
       rating: "",
       link: "",
-      category: "550e8400-e29b-41d4-a716-446655440001",
+      category: categories[0]?.id || "550e8400-e29b-41d4-a716-446655440001",
     });
     setFieldErrors({});
     setError("");
@@ -331,7 +327,7 @@ const ProductForm = () => {
                 htmlFor="image"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                URL hình ảnh <span className="text-red-500">*</span>
+                URL hình ảnh
               </label>
               <input
                 type="url"
